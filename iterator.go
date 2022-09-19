@@ -28,10 +28,10 @@ type Query struct {
 
 // QueryIterator represents iterator for query generic values from Fetcher.
 type QueryIterator[T any] struct {
-	query   Query
-	fetcher Fetcher[T]
-	valid   bool
-	page    int
+	query Query
+	fetch Fetcher[T]
+	valid bool
+	page  int
 }
 
 func (iter *QueryIterator[T]) Next() (elements []T, err error) {
@@ -45,7 +45,7 @@ func (iter *QueryIterator[T]) Next() (elements []T, err error) {
 		return nil, ErrEmptyIterator
 	}
 
-	elements, err = iter.fetcher(iter.sql(), iter.query.args...)
+	elements, err = iter.fetch(iter.sql(), iter.query.args...)
 	if err != nil {
 		return
 	}
@@ -75,10 +75,10 @@ func (iter *QueryIterator[T]) offset() int {
 // Iterate creates the QueryIterator.
 func Iterate[T any](f Fetcher[T], q Query) *QueryIterator[T] {
 	return &QueryIterator[T]{
-		fetcher: f,
-		query:   q,
-		valid:   true,
-		page:    1,
+		fetch: f,
+		query: q,
+		valid: true,
+		page:  1,
 	}
 }
 
